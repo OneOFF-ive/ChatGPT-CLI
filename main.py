@@ -9,8 +9,8 @@ def generateCompletion(msg):
         temperature=1,
         n=1,
         stream=False,
-        stop='\n',
-        max_tokens=2048,
+        stop=None,
+        max_tokens=3012,
         presence_penalty=0,
         frequency_penalty=0,
     )
@@ -36,3 +36,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
