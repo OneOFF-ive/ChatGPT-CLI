@@ -1,16 +1,21 @@
+from colorama import init, Fore
+
+init(autoreset=True)
+
+
 class Log:
     @staticmethod
     def info(message):
-        print("\033[92m" + "[info]:" + message + "\033[0m")
+        print(Fore.GREEN + "[info]:" + message + "\033[0m")
 
     @staticmethod
     def point(message):
-        print("\033[93m" + message + "\033[0m")
+        print(Fore.YELLOW + message + "\033[0m")
 
     @staticmethod
     def answer(message):
-        print("\033[94m" + message + "\033[0m")
+        print(Fore.BLUE + message + "\033[0m")
 
     @staticmethod
     def error(message):
-        print("\033[91m" + "[error]:" + message + "\033[0m")
+        print(Fore.RED + "[error]:" + message + "\033[0m")

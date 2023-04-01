@@ -4,7 +4,7 @@ import os
 import openai
 import glob
 
-from openai.error import APIConnectionError
+from openai.error import APIConnectionError, InvalidRequestError
 
 from ClIHandle import ClIHandle
 from Log import Log
@@ -21,7 +21,7 @@ def generateCompletion(msg):
         n=1,
         stream=False,
         stop=None,
-        max_tokens=3012,
+        max_tokens=2048,
         presence_penalty=0,
         frequency_penalty=0,
     )
@@ -56,6 +56,8 @@ def chat():
             Log.answer(result)
         except APIConnectionError:
             Log.error("连接超时，请检查网络或稍后再次尝试")
+        except InvalidRequestError:
+            Log.error("输入文本超过最大限制")
 
 
 def setFile():
@@ -71,7 +73,7 @@ def setFile():
         if fileName == "quit":
             return
         try:
-            Log.info("开始读取文件")
+            Log.info("开始读取文件{}".format(fileName))
             with open(fileName, 'r') as f:
                 messages.clear()
                 currentFile = fileName
