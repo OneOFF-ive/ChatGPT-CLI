@@ -76,8 +76,8 @@ def setFile():
 
 def save():
     global messages, currentFile
-    fileName = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") if currentFile == "" else currentFile
-    with open(fileName + ".json", 'w') as f:
+    fileName = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + ".json" if currentFile == "" else currentFile
+    with open(fileName, 'w') as f:
         for item in messages:
             json.dump(item, f)
             f.write('\n')
