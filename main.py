@@ -3,7 +3,11 @@ import json
 import os
 import openai
 import glob
+
+from openai.error import APIConnectionError
+
 from ClIHandle import ClIHandle
+from Log import Log
 
 messages: list[dict] = []
 currentFile: str = ""
@@ -39,48 +43,57 @@ def chat():
     initOpenAI()
 
     while True:
+        Log.point("输入问题")
         content = input()
         if content == "quit":
             save()
             break
         messages.append({"role": "user", "content": content})
 
-        result = parseResult(generateCompletion(messages))
-        messages.append({"role": "assistant", "content": result})
-        print(result)
+        try:
+            result = parseResult(generateCompletion(messages))
+            messages.append({"role": "assistant", "content": result})
+            Log.answer(result)
+        except APIConnectionError:
+            Log.error("连接超时，请检查网络或稍后再次尝试")
 
 
 def setFile():
     global currentFile
     path = os.getcwd()
+    Log.point("存在的对话文件：")
     for file in glob.glob(os.path.join(path, "*.json")):
-        print(file)
+        Log.answer(file)
 
     while True:
-        fileName = input("选择文件：")
+        Log.point("请选择一个对话文件")
+        fileName = input()
         if fileName == "quit":
             return
         try:
+            Log.info("开始读取文件")
             with open(fileName, 'r') as f:
                 messages.clear()
                 currentFile = fileName
                 for line in f:
                     item = json.loads(line)
                     messages.append(item)
-                print(messages)
+                Log.info("读取成功,文件信息为：{}".format(messages))
                 break
         except FileNotFoundError:
-            print("文件不存在")
+            Log.error("文件不存在")
             continue
 
 
 def save():
     global messages, currentFile
     fileName = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + ".json" if currentFile == "" else currentFile
+    Log.info("开始保存文件" + fileName)
     with open(fileName, 'w') as f:
         for item in messages:
             json.dump(item, f)
             f.write('\n')
+    Log.info("保存成功")
 
 
 if __name__ == "__main__":
@@ -89,7 +102,8 @@ if __name__ == "__main__":
     cli.add("file", setFile)
     cli.add("save", save)
     while True:
-        option = input("选项：")
+        Log.point("确定你要进行的操作")
+        option = input()
         if option == "quit":
             break
         cli.parse(option)
