@@ -1,7 +1,7 @@
 from typing import Dict, Callable
 
 
-class CliHandle:
+class ClIHandle:
 
     def __init__(self):
         self.name2Func: Dict[str, Callable[[], None]] = {}
@@ -16,8 +16,3 @@ class CliHandle:
         function: Callable[[], None] = self.name2Func.get(name);
         if function is not None:
             function()
-
-
-cli = CliHandle()
-cli.add("test", lambda: print("test"))
-cli.parse("test")
