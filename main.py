@@ -60,7 +60,7 @@ def parseResult_stream(completions):
 
 def initOpenAI():
     Log.info("OpenAI Initializing")
-    global messages,system_prompt
+    global messages, system_prompt
     openai.api_key = os.getenv("OPENAI_API_KEY")
     messages.append({"role": "system", "content": system_prompt})
     Log.info("OpenAI Initialized")
