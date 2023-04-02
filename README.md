@@ -34,7 +34,7 @@ PAUSE
 ### PowerShell快速启动  
 如果你需要在 PowerShell 中使用 chat 命令，你需要进行如下操作：
 
-1. 打开 PowerShell，输入 ```$PROFILE```，按回车键。如果提示 “文件未找到”，那么你需要创建 PowerShell 配置文件。 创建一个新的配置文件，输入 New-Item $PROFILE –type file –force。
+1. 打开 PowerShell，输入 ```$PROFILE```，按回车键。如果提示 “文件未找到”，那么你需要创建 PowerShell 配置文件。 创建一个新的配置文件，输入```New-Item $PROFILE –type file –force```。
 建议右键运行 PowerShell 作为管理员。  
 2. 用任意文本编辑器打开 PowerShell 配置文件(第一步创建的文件)
 3. 将以下命令添加到文件末尾：```function chat {python.exe D:\code\ChatGPT-CLI\main.py}```,注意根据本地情况修改python解析器路径和main.py文件路径
