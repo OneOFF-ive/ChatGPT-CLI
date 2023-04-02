@@ -11,6 +11,11 @@
 · 音频转文字  
 · 一键启动  
 · 聊天记录保存  
+· 快速响应
+
+### 启动之前
+1. 准备好你的 [OpenAI API Key](https://platform.openai.com/account/api-keys)
+2. 在系统环境变量中新增一条变量```OPENAI_API_KEY```，变量值为你的[OpenAI API Key](https://platform.openai.com/account/api-keys)
 
 ### 启动项目
 1. 下载项目到本地  
@@ -26,7 +31,7 @@
 D:\code\ChatGPT-CLI\Virtualenv\Scripts\python.exe D:\code\ChatGPT-CLI\main.py
 PAUSE
 ```
-2. 在系统环境变量中新增chat.bat的地址，即可在cmd中输入chat命令快速启动项目 
+2. 在系统环境变量PATH中新增chat.bat的地址，即可在cmd中输入chat命令快速启动项目 
 <div style="text-align:center">
   <img src="./static/cmd_run.png" alt="cmd_run">
 </div>
@@ -45,6 +50,9 @@ PAUSE
   <img src="./static/powershell_run.png" alt="powershell_run">
 </div>
 
+### 项目配置
+在使用前
+
 ### 如何使用
 该项目共有五个选项```chat file save image audio```，当程序提示```Action```时即可输入选项并进入对应的模式，输入```quit```可以退出该程序，也可以直接关闭程序:D，接下来将分别介绍各个选项的作用：  
 #### chat
@@ -59,3 +67,29 @@ PAUSE
 输入音频文件的路径，返回该音频翻译的文字内容  
 
 **注意**：所有选项都可以通过输入```quit```返回主菜单
+
+### 自定义程序
+修改main.py文件中的部分代码来定制化你的聊天机器人:D
+```python
+system_prompt: str = "You are a helpful assistant."
+model: str = "gpt-3.5-turbo"
+temperature: int = 1
+n: int = 1
+stream: bool = True
+stop: bytes = None
+max_tokens: int = 2048
+presence_penalty: int = 0
+frequency_penalty: int = 0
+```
+参数的具体含义参考[OpenAI API官网](https://platform.openai.com/docs/api-reference)
+
+### 使用截图
+<div style="text-align:center">
+  <img src="./static/example1.png" alt="example1">
+</div>
+<div style="text-align:center">
+  <img src="./static/example2.png" alt="example2">
+</div>  
+<div style="text-align:center">
+  <img src="./static/example3.png" alt="example3">
+</div>  

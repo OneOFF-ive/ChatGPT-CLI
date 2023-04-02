@@ -12,6 +12,7 @@ from Log import Log
 messages: list[dict] = []
 currentFile: str = ""
 
+system_prompt: str = "You are a helpful assistant."
 model: str = "gpt-3.5-turbo"
 temperature: int = 1
 n: int = 1
@@ -59,10 +60,9 @@ def parseResult_stream(completions):
 
 def initOpenAI():
     Log.info("OpenAI Initializing")
-    global messages
-    openai.organization = "org-nQ2su19ado3KvvI9HE5vAZHO"
+    global messages,system_prompt
     openai.api_key = os.getenv("OPENAI_API_KEY")
-    messages.append({"role": "system", "content": "You are a helpful assistant."})
+    messages.append({"role": "system", "content": system_prompt})
     Log.info("OpenAI Initialized")
 
 
@@ -100,7 +100,7 @@ def setFile():
             return
         try:
             Log.info("Loading File {}".format(fileName))
-            with open(fileName, 'r') as f:
+            with open(os.path.join(chat_logs_path, fileName), 'r') as f:
                 messages.clear()
                 currentFile = fileName
                 for line in f:
