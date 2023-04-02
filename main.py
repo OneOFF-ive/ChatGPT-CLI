@@ -86,9 +86,11 @@ def chat():
 
 def setFile():
     global currentFile
-    path = os.getcwd()
+    generateCatalogue()
+    doc_path = os.path.join(os.path.expanduser("~"), "Documents")
+    chat_logs_path = os.path.join(doc_path, "chat_logs")
     Log.point("Existing Files：")
-    for file in glob.glob(os.path.join(path, "*.json")):
+    for file in glob.glob(os.path.join(chat_logs_path, "*.json")):
         Log.answer(file)
 
     while True:
@@ -114,8 +116,11 @@ def setFile():
 def save():
     global messages, currentFile
     fileName = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + ".json" if currentFile == "" else currentFile
+    generateCatalogue()
+    doc_path = os.path.join(os.path.expanduser("~"), "Documents")
+    chat_logs_path = os.path.join(doc_path, "chat_logs")
     Log.info("Saving File {}".format(fileName))
-    with open(fileName, 'w') as f:
+    with open(os.path.join(chat_logs_path, fileName), 'w') as f:
         for item in messages:
             json.dump(item, f)
             f.write('\n')
@@ -174,6 +179,13 @@ def audio():
             Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit")
         except FileNotFoundError:
             Log.error("File Does Not Exist")
+
+
+def generateCatalogue():
+    doc_path = os.path.join(os.path.expanduser("~"), "Documents")
+    chat_logs_path = os.path.join(doc_path, "chat_logs")
+    if not os.path.exists(chat_logs_path):
+        os.makedirs(chat_logs_path)
 
 
 if __name__ == "__main__":
