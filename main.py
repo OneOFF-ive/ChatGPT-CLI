@@ -77,7 +77,9 @@ def chat():
         messages.append({"role": "user", "content": content})
 
         try:
-            parseResult_stream(generateCompletion(messages)) if stream else parseResult(generateCompletion(messages))
+            res = generateCompletion(messages)
+            parseResult_stream(res) if stream else parseResult(res)
+            save()
         except APIConnectionError:
             Log.error("[APIConnectionError]:Connection timed out. Please check the network or try again later")
         except InvalidRequestError:
@@ -116,6 +118,7 @@ def setFile():
 def save():
     global messages, currentFile
     fileName = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + ".json" if currentFile == "" else currentFile
+    currentFile = fileName
     generateCatalogue()
     doc_path = os.path.join(os.path.expanduser("~"), "Documents")
     chat_logs_path = os.path.join(doc_path, "chat_logs")
@@ -188,8 +191,7 @@ def generateCatalogue():
         os.makedirs(chat_logs_path)
 
 
-if __name__ == "__main__":
-    Log.info("Project Launch")
+def run():
     initOpenAI()
     cli = ClIHandle()
     cli.add("chat", chat)
@@ -203,3 +205,12 @@ if __name__ == "__main__":
         if option == "quit":
             break
         cli.parse(option)
+
+
+if __name__ == "__main__":
+    try:
+        Log.info("Project Launch")
+        run()
+    finally:
+        Log.info("Project Finish")
+        save()
