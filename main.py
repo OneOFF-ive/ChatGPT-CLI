@@ -41,9 +41,8 @@ def initOpenAI():
 def chat():
     global messages
     initOpenAI()
-
+    Log.point("Start Chatting")
     while True:
-        Log.point("输入问题")
         content = input()
         if content == "quit":
             save()
@@ -63,48 +62,49 @@ def chat():
 def setFile():
     global currentFile
     path = os.getcwd()
-    Log.point("存在的对话文件：")
+    Log.point("Existing Files：")
     for file in glob.glob(os.path.join(path, "*.json")):
         Log.answer(file)
 
     while True:
-        Log.point("请选择一个对话文件")
+        Log.point("Select A File")
         fileName = input()
         if fileName == "quit":
             return
         try:
-            Log.info("开始读取文件{}".format(fileName))
+            Log.info("Loading File {}".format(fileName))
             with open(fileName, 'r') as f:
                 messages.clear()
                 currentFile = fileName
                 for line in f:
                     item = json.loads(line)
                     messages.append(item)
-                Log.info("读取成功,文件信息为：{}".format(messages))
+                Log.info("Loaded File {}, Messages Is {}".format(fileName, messages))
                 break
         except FileNotFoundError:
-            Log.error("文件不存在")
+            Log.error("File Does Not Exist")
             continue
 
 
 def save():
     global messages, currentFile
     fileName = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + ".json" if currentFile == "" else currentFile
-    Log.info("开始保存文件" + fileName)
+    Log.info("Saving File {}".format(fileName))
     with open(fileName, 'w') as f:
         for item in messages:
             json.dump(item, f)
             f.write('\n')
-    Log.info("保存成功")
+    Log.info("Saved File {}".format(fileName))
 
 
 if __name__ == "__main__":
+    Log.info("Project Launch")
     cli = ClIHandle()
     cli.add("chat", chat)
     cli.add("file", setFile)
     cli.add("save", save)
     while True:
-        Log.point("确定你要进行的操作")
+        Log.point("Action")
         option = input()
         if option == "quit":
             break
