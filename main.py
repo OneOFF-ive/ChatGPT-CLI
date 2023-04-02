@@ -212,5 +212,6 @@ if __name__ == "__main__":
         Log.info("Project Launch")
         run()
     finally:
-        Log.info("Project Finish")
         save()
+        Log.info("Project Finish")
+
