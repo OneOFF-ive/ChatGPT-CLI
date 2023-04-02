@@ -50,9 +50,6 @@ PAUSE
   <img src="./static/powershell_run.png" alt="powershell_run">
 </div>
 
-### 项目配置
-在使用前
-
 ### 如何使用
 该项目共有五个选项```chat file save image audio```，当程序提示```Action```时即可输入选项并进入对应的模式，输入```quit```可以退出该程序，也可以直接关闭程序:D，接下来将分别介绍各个选项的作用：  
 #### chat
