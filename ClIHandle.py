@@ -1,5 +1,5 @@
 from typing import Dict, Callable
-
+from Log import Log
 
 class ClIHandle:
 
@@ -16,3 +16,5 @@ class ClIHandle:
         function: Callable[[], None] = self.name2Func.get(name);
         if function is not None:
             function()
+        else:
+            Log.error("Option Does Not Exist")

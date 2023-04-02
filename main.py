@@ -58,15 +58,16 @@ def parseResult_stream(completions):
 
 
 def initOpenAI():
+    Log.info("OpenAI Initializing")
     global messages
     openai.organization = "org-nQ2su19ado3KvvI9HE5vAZHO"
     openai.api_key = os.getenv("OPENAI_API_KEY")
     messages.append({"role": "system", "content": "You are a helpful assistant."})
+    Log.info("OpenAI Initialized")
 
 
 def chat():
     global messages, stream
-    initOpenAI()
     Log.point("Start Chatting")
     while True:
         content = input()
@@ -121,12 +122,40 @@ def save():
     Log.info("Saved File {}".format(fileName))
 
 
+def generateImage(prompt):
+    Log.info("Picture Generating")
+    res = openai.Image.create(
+        prompt=prompt,
+        n=1,
+        size="1024x1024",
+        response_format="url"
+    )
+    Log.info("Picture Generated")
+    return res
+
+
+def image():
+    while True:
+        Log.point("Prompt")
+        prompt = input()
+        if prompt == "quit":
+            break
+        try:
+            Log.answer(generateImage(prompt)["data"][0]["url"])
+        except APIConnectionError:
+            Log.error("[APIConnectionError]:Connection timed out. Please check the network or try again later")
+        except InvalidRequestError:
+            Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit")
+
+
 if __name__ == "__main__":
     Log.info("Project Launch")
+    initOpenAI()
     cli = ClIHandle()
     cli.add("chat", chat)
     cli.add("file", setFile)
     cli.add("save", save)
+    cli.add("image", image)
     while True:
         Log.point("Action")
         option = input()
