@@ -136,7 +136,7 @@ def generateImage(prompt):
 
 def image():
     while True:
-        Log.point("Prompt")
+        Log.point("Image Prompt")
         prompt = input()
         if prompt == "quit":
             break
@@ -148,6 +148,34 @@ def image():
             Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit")
 
 
+def generateTranscriptions(fileName: str):
+    with open(fileName, "rb") as file:
+        Log.info("Audio Translating")
+        res = openai.Audio.translate(
+            file=file,
+            model="whisper-1",
+            response_format="json"
+        )
+        Log.info("Audio Translated")
+        return res
+
+
+def audio():
+    while True:
+        Log.point("Audio File")
+        prompt = input()
+        if prompt == "quit":
+            break
+        try:
+            Log.answer(generateTranscriptions(prompt)["text"])
+        except APIConnectionError:
+            Log.error("[APIConnectionError]:Connection timed out. Please check the network or try again later")
+        except InvalidRequestError:
+            Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit")
+        except FileNotFoundError:
+            Log.error("File Does Not Exist")
+
+
 if __name__ == "__main__":
     Log.info("Project Launch")
     initOpenAI()
@@ -156,6 +184,7 @@ if __name__ == "__main__":
     cli.add("file", setFile)
     cli.add("save", save)
     cli.add("image", image)
+    cli.add("audio", audio)
     while True:
         Log.point("Action")
         option = input()
