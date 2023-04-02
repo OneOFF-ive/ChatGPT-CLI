@@ -12,23 +12,49 @@ from Log import Log
 messages: list[dict] = []
 currentFile: str = ""
 
+model: str = "gpt-3.5-turbo"
+temperature: int = 1
+n: int = 1
+stream: bool = True
+stop: bytes = None
+max_tokens: int = 2048
+presence_penalty: int = 0
+frequency_penalty: int = 0
+
 
 def generateCompletion(msg):
-    return openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+    global model, temperature, n, stream, stop, max_tokens, presence_penalty, frequency_penalty
+    response = openai.ChatCompletion.create(
+        model=model,
         messages=msg,
-        temperature=1,
-        n=1,
-        stream=False,
-        stop=None,
-        max_tokens=2048,
-        presence_penalty=0,
-        frequency_penalty=0,
+        temperature=temperature,
+        n=n,
+        stream=stream,
+        stop=stop,
+        max_tokens=max_tokens,
+        presence_penalty=presence_penalty,
+        frequency_penalty=frequency_penalty,
     )
+    return response
 
 
 def parseResult(completions):
-    return completions.choices[0]["message"]["content"]
+    result = completions.choices[0]["message"]["content"]
+    messages.append({"role": "assistant", "content": result})
+    Log.answer(result)
+    Log.info("Finish")
+
+
+def parseResult_stream(completions):
+    result = ""
+    for chunk in completions:
+        chunk_message = chunk['choices'][0]['delta']
+        res = chunk_message.get('content', '')
+        Log.answer(res, end='')
+        result += res
+    Log.answer('\n')
+    Log.info("Finish")
+    messages.append({"role": "assistant", "content": result})
 
 
 def initOpenAI():
@@ -39,7 +65,7 @@ def initOpenAI():
 
 
 def chat():
-    global messages
+    global messages, stream
     initOpenAI()
     Log.point("Start Chatting")
     while True:
@@ -50,13 +76,11 @@ def chat():
         messages.append({"role": "user", "content": content})
 
         try:
-            result = parseResult(generateCompletion(messages))
-            messages.append({"role": "assistant", "content": result})
-            Log.answer(result)
+            parseResult_stream(generateCompletion(messages)) if stream else parseResult(generateCompletion(messages))
         except APIConnectionError:
-            Log.error("连接超时，请检查网络或稍后再次尝试")
+            Log.error("[APIConnectionError]:Connection timed out. Please check the network or try again later")
         except InvalidRequestError:
-            Log.error("输入文本超过最大限制")
+            Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit")
 
 
 def setFile():
