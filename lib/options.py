@@ -137,7 +137,7 @@ def not_auto_modify_cons():
     except APIConnectionError:
         Log.error("Connection timed out. Please check the network or try again later", "APIConnectionError")
     except InvalidRequestError:
-        Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit",
+        Log.error("Possibly because the input token exceeds the maximum limit",
                   "InvalidRequestError")
 
 
@@ -152,7 +152,7 @@ def auto_modify_cons():
 
         asyncio.create_task(append(messages[-2:]))
     except APIConnectionError:
-        Log.error("[APIConnectionError]:Connection timed out. Please check the network or try again later",
+        Log.error("Connection timed out. Please check the network or try again later",
                   "APIConnectionError")
     except InvalidRequestError:
         if default_config.conversations > 1:
@@ -161,7 +161,7 @@ def auto_modify_cons():
                      "prepare to resend the request.")
             Log.warn("The context size is now {}.".format(default_config.conversations))
         else:
-            Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit",
+            Log.error("Possibly because the input token exceeds the maximum limit",
                       "InvalidRequestError")
 
 
@@ -186,6 +186,15 @@ async def chat():
             auto_modify_cons()
 
 
+async def image(prompt):
+    try:
+        Log.answer(ApiBuilder.Image(prompt)["data"][0]["url"])
+    except APIConnectionError:
+        Log.error("Connection timed out. Please check the network or try again later", "APIConnectionError")
+    except InvalidRequestError:
+        Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit")
+
+
 Log.info("File Directory Generating")
 chat_logs_path = getChatLogsPath()
 generateCatalogue(getChatLogsPath())
@@ -195,5 +204,6 @@ __all__ = [
     "save",
     "selectChat",
     "allChats",
-    "chat"
+    "chat",
+    "image"
 ]
