@@ -195,6 +195,17 @@ async def image(prompt):
         Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit")
 
 
+async def translate(prompt):
+    try:
+        Log.answer(ApiBuilder.Transcriptions(prompt)["text"])
+    except APIConnectionError:
+        Log.error("Connection timed out. Please check the network or try again later", "APIConnectionError")
+    except InvalidRequestError:
+        Log.error("Possibly because the input token exceeds the maximum limit", "InvalidRequestError")
+    except FileNotFoundError:
+        Log.error("File Not Found", "FileNotFoundError")
+
+
 Log.info("File Directory Generating")
 chat_logs_path = getChatLogsPath()
 generateCatalogue(getChatLogsPath())
@@ -205,5 +216,6 @@ __all__ = [
     "selectChat",
     "allChats",
     "chat",
-    "image"
+    "image",
+    "translate"
 ]
