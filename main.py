@@ -1,3 +1,7 @@
+import os
+
+from colorama import Fore
+
 from lib.Log import Log
 from lib.ClIHandle import ClIHandle
 from lib.options import *
@@ -12,6 +16,13 @@ async def run():
     cli.add("save", save)
     cli.add("i", image)
     cli.add("t", translate)
+
+    os.system('cls' if os.name == 'nt' else 'clear')
+    root_path = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(root_path, "logo.txt"), 'r') as file:
+        logo = file.read()
+    print(Fore.CYAN + logo)
+
     while True:
         Log.point("Action")
 
@@ -23,6 +34,7 @@ async def run():
         if option == "quit":
             break
         await cli.parse(option, *args)
+
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(run())
