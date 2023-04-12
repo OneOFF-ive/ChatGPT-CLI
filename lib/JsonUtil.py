@@ -1,6 +1,7 @@
-import os
 import json
-from config import *
+import os
+
+from lib.config import ChatCompletionConfig, ImageConfig, TranscriptionsConfig
 
 
 class JsonUtil:
