@@ -1,6 +1,7 @@
 from lib.JsonUtil import JsonUtil
 from lib.config import Config, ChatCompletionConfig, ImageConfig, TranscriptionsConfig
 
+
 data = JsonUtil.json2Map("conf", "config.json")
 default_config = Config(
     chatCompletionConfig=ChatCompletionConfig(**data.get("ChatCompletionConfig")),

@@ -2,7 +2,6 @@ from lib.Log import Log
 
 
 class ClIHandle:
-
     def __init__(self):
         self.name2Func = {}
 

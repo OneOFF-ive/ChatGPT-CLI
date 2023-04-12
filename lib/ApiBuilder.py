@@ -1,8 +1,8 @@
 import os
 import openai
-
 from lib.Log import Log
 from lib.default_config import default_config
+
 
 Log.info("OpenAI Initializing")
 openai.api_key = os.getenv("OPENAI_API_KEY")
