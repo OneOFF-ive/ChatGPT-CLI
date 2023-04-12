@@ -48,27 +48,23 @@ async def write(msg: list[dict], fp):
         await fp.write(data2json)
 
 
-async def save(fp=None):
+async def save():
     global messages, current_file_name
     fileName = getCurrentFileName()
     Log.info("Saving File {}".format(fileName))
-    if fp is not None:
-        await write(messages, fp)
-    else:
-        fp = await openCurrentFileBy('w')
-        await write(messages, fp)
-        await fp.close()
+
+    fp = await openCurrentFileBy('w')
+    await write(messages, fp)
+    await fp.close()
     Log.info("Saved File {}".format(fileName))
 
 
-async def append(msg: list[dict], fp=None):
+async def append(msg: list[dict]):
     global current_file_name
-    if fp is not None:
-        await write(messages, fp)
-    else:
-        fp = await openCurrentFileBy('a')
-        await write(msg, fp)
-        await fp.close()
+
+    fp = await openCurrentFileBy('a')
+    await write(msg, fp)
+    await fp.close()
 
 
 # noinspection PyTypeChecker
