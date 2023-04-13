@@ -129,6 +129,42 @@ def printChatLog(msg: list[dict]):
             Log.answer(m.get("content"))
 
 
+def not_auto_modify_cons():
+    try:
+        res = ApiBuilder.ChatCompletion(messages)
+        parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
+        asyncio.create_task(append(messages[-2:]))
+    except APIConnectionError:
+        Log.error("Connection timed out. Please check the network or try again later", "APIConnectionError")
+    except InvalidRequestError:
+        Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit",
+                  "InvalidRequestError")
+
+
+def auto_modify_cons():
+    try:
+        send_messages = messages[-default_config.conversations:]
+        res = ApiBuilder.ChatCompletion(send_messages)
+        parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
+
+        if default_config.conversations - len(messages) < 0.3 * default_config.conversations:
+            default_config.conversations = default_config.conversations + 1
+
+        asyncio.create_task(append(messages[-2:]))
+    except APIConnectionError:
+        Log.error("[APIConnectionError]:Connection timed out. Please check the network or try again later",
+                  "APIConnectionError")
+    except InvalidRequestError:
+        if default_config.conversations > 1:
+            default_config.conversations = int(default_config.conversations / 2)
+            Log.warn("The number of tokens exceeds the limit. Automatically reduce the context size and "
+                     "prepare to resend the request.")
+            Log.warn("The context size is now {}.".format(default_config.conversations))
+        else:
+            Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit",
+                      "InvalidRequestError")
+
+
 async def chat():
     global messages
     filePath = getChatLogsPath()
@@ -145,37 +181,9 @@ async def chat():
             break
         messages.append({"role": "user", "content": content})
         if not default_config.auto_modify_cons:
-            try:
-                res = ApiBuilder.ChatCompletion(messages)
-                parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
-                asyncio.create_task(append(messages[-2:]))
-            except APIConnectionError:
-                Log.error("Connection timed out. Please check the network or try again later", "APIConnectionError")
-            except InvalidRequestError:
-                Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit",
-                          "InvalidRequestError")
+            not_auto_modify_cons()
         else:
-            try:
-                send_messages = messages[-default_config.conversations:]
-                res = ApiBuilder.ChatCompletion(send_messages)
-                parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
-
-                if default_config.conversations - len(messages) < 0.3 * default_config.conversations:
-                    default_config.conversations = default_config.conversations + 1
-
-                asyncio.create_task(append(messages[-2:]))
-            except APIConnectionError:
-                Log.error("[APIConnectionError]:Connection timed out. Please check the network or try again later",
-                          "APIConnectionError")
-            except InvalidRequestError:
-                if default_config.conversations > 1:
-                    default_config.conversations = int(default_config.conversations / 2)
-                    Log.warn("The number of tokens exceeds the limit. Automatically reduce the context size and "
-                             "prepare to resend the request.")
-                    Log.warn("The context size is now {}.".format(default_config.conversations))
-                else:
-                    Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit",
-                              "InvalidRequestError")
+            auto_modify_cons()
 
 
 Log.info("File Directory Generating")
