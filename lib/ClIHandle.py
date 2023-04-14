@@ -1,4 +1,4 @@
-from Log import Log
+from lib.Log import Log
 
 
 class ClIHandle:

@@ -6,8 +6,8 @@ import glob
 
 from openai.error import APIConnectionError, InvalidRequestError
 
-from ClIHandle import ClIHandle
-from Log import Log
+from lib.ClIHandle import ClIHandle
+from lib.Log import Log
 
 messages: list[dict] = []
 currentFile: str = ""

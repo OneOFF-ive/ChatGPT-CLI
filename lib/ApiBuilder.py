@@ -1,7 +1,7 @@
 import os
 import openai
 
-from Log import Log
+from lib.Log import Log
 from default_config import *
 
 
