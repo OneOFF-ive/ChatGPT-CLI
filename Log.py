@@ -14,11 +14,15 @@ class Log:
 
     @staticmethod
     def answer(message, end='\n'):
-        print(Fore.BLUE + message + "\033[0m", end=end)
+        print(Fore.LIGHTBLUE_EX + message + "\033[0m", end=end)
 
     @staticmethod
-    def error(message):
-        print(Fore.RED + "[error]:" + message + "\033[0m")
+    def error(message, error="Error"):
+        print(Fore.LIGHTRED_EX + "[{}]:".format(error) + message + "\033[0m")
+
+    @staticmethod
+    def warn(message):
+        print(Fore.RED + "[warn]:" + message + "\033[0m")
 
 
 __all__ = [

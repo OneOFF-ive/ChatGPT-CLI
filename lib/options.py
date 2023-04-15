@@ -99,7 +99,7 @@ async def selectChat(fileName):
         await setCurrentFile(fileName)
         Log.info("Loaded File {}, Messages Is {}".format(fileName, messages))
     except FileNotFoundError:
-        Log.error("File Does Not Exist")
+        Log.error("File Does Not Exist", "FileNotFoundError")
 
 
 def parseResult(completions):
@@ -150,9 +150,10 @@ async def chat():
                 parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
                 asyncio.create_task(append(messages[-2:]))
             except APIConnectionError:
-                Log.error("[APIConnectionError]:Connection timed out. Please check the network or try again later")
+                Log.error("Connection timed out. Please check the network or try again later", "APIConnectionError")
             except InvalidRequestError:
-                Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit")
+                Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit",
+                          "InvalidRequestError")
         else:
             try:
                 send_messages = messages[-default_config.conversations:]
@@ -164,7 +165,8 @@ async def chat():
 
                 asyncio.create_task(append(messages[-2:]))
             except APIConnectionError:
-                Log.error("[APIConnectionError]:Connection timed out. Please check the network or try again later")
+                Log.error("[APIConnectionError]:Connection timed out. Please check the network or try again later",
+                          "APIConnectionError")
             except InvalidRequestError:
                 if default_config.conversations > 1:
                     default_config.conversations = int(default_config.conversations / 2)
@@ -172,7 +174,8 @@ async def chat():
                              "prepare to resend the request.")
                     Log.warn("The context size is now {}.".format(default_config.conversations))
                 else:
-                    Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit")
+                    Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit",
+                              "InvalidRequestError")
 
 
 Log.info("File Directory Generating")

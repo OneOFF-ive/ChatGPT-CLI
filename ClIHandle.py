@@ -17,4 +17,4 @@ class ClIHandle:
         if function is not None:
             await function(*args)
         else:
-            Log.error("Option Does Not Exist")
+            Log.error("Option Does Not Exist", "OptionNotExistError")
