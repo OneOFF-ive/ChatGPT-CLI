@@ -14,11 +14,11 @@ class JsonUtil:
         conf_path = os.path.join(root_path, file_dir, file_name)
 
         # 读取json文件内容
-        with open(conf_path, 'r') as f:
-            conf_data = json.load(f)
+        with open(conf_path, 'r') as fp:
+            conf_data = json.load(fp=fp)
 
         # 将json数据序列化
-        chatCompletionConfig = ChatCompletionConfig(**conf_data.get("CompletionConfig"))
+        chatCompletionConfig = ChatCompletionConfig(**conf_data.get("ChatCompletionConfig"))
         imageConfig = ImageConfig(**conf_data.get("ImageConfig"))
         transcriptionsConfig = TranscriptionsConfig(**conf_data.get("TranscriptionsConfig"))
 

@@ -3,7 +3,6 @@ from dataclasses import dataclass
 
 @dataclass
 class ChatCompletionConfig:
-    system_prompt: str
     model: str
     temperature: int
     n: int

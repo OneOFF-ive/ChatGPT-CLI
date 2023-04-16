@@ -14,7 +14,7 @@ class ApiBuilder:
     def ChatCompletion(msg: list[dict]):
         return openai.ChatCompletion.create(
             messages=msg,
-            **default_config.chatCompletionConfig
+            **vars(default_config.chatCompletionConfig)
         )
 
     @staticmethod
@@ -22,7 +22,7 @@ class ApiBuilder:
         Log.info("Picture Generating")
         res = openai.Image.create(
             prompt=prompt,
-            **default_config.imageConfig
+            **vars(default_config.imageConfig)
         )
         Log.info("Picture Generated")
         return res
@@ -34,7 +34,7 @@ class ApiBuilder:
                 Log.info("Audio Translating")
                 res = openai.Audio.translate(
                     file=file,
-                    **default_config.transcriptionsConfig
+                    **vars(default_config.transcriptionsConfig)
                 )
                 Log.info("Audio Translated")
                 return res

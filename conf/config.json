@@ -1,6 +1,5 @@
 {
   "ChatCompletionConfig": {
-    "system_prompt": "You are a helpful assistant.",
     "model": "gpt-3.5-turbo",
     "temperature": 1,
     "n": 1,
