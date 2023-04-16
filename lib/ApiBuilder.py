@@ -4,8 +4,10 @@ import openai
 from Log import Log
 import default_config
 
+
+Log.info("OpenAI Initializing")
 openai.api_key = os.getenv("OPENAI_API_KEY")
-Log.info("inited")
+Log.info("OpenAI Initialized")
 
 
 class ApiBuilder:
