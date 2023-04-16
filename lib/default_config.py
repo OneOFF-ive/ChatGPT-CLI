@@ -1,9 +1,9 @@
 from JsonUtil import *
 
-completionConfig, imageConfig, transcriptionsConfig = JsonUtil.json2Config("conf", "config.json")
+chatCompletionConfig, imageConfig, transcriptionsConfig = JsonUtil.json2Config("conf", "config.json")
 
 __all__ = [
-    "completionConfig",
+    "chatCompletionConfig",
     "imageConfig",
     "transcriptionsConfig"
 ]

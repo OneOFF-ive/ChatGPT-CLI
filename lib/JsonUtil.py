@@ -18,11 +18,11 @@ class JsonUtil:
             conf_data = json.load(f)
 
         # 将json数据序列化
-        completionConfig = CompletionConfig(**conf_data.get("CompletionConfig"))
+        chatCompletionConfig = ChatCompletionConfig(**conf_data.get("CompletionConfig"))
         imageConfig = ImageConfig(**conf_data.get("ImageConfig"))
         transcriptionsConfig = TranscriptionsConfig(**conf_data.get("TranscriptionsConfig"))
 
-        return completionConfig, imageConfig, transcriptionsConfig
+        return chatCompletionConfig, imageConfig, transcriptionsConfig
 
 
 __all__ = [

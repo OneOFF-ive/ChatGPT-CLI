@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class CompletionConfig:
+class ChatCompletionConfig:
     system_prompt: str
     model: str
     temperature: int
@@ -28,7 +28,7 @@ class TranscriptionsConfig:
 
 
 __all__ = [
-    "CompletionConfig",
+    "ChatCompletionConfig",
     "ImageConfig",
     "TranscriptionsConfig"
 ]
