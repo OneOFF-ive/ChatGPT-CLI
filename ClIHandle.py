@@ -1,6 +1,7 @@
 from typing import Dict, Callable
 from Log import Log
 
+
 class ClIHandle:
 
     def __init__(self):

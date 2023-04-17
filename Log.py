@@ -19,3 +19,8 @@ class Log:
     @staticmethod
     def error(message):
         print(Fore.RED + "[error]:" + message + "\033[0m")
+
+
+__all__ = [
+    "Log"
+]
