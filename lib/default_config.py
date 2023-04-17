@@ -1,9 +1,14 @@
 from JsonUtil import *
+from config import *
 
-chatCompletionConfig, imageConfig, transcriptionsConfig = JsonUtil.json2Config("conf", "config.json")
+data = JsonUtil.json2Map("conf", "config.json")
+default_config = Config(
+    chatCompletionConfig=ChatCompletionConfig(**data.get("ChatCompletionConfig")),
+    imageConfig=ImageConfig(**data.get("ImageConfig")),
+    transcriptionsConfig=TranscriptionsConfig(**data.get("TranscriptionsConfig")),
+    **data
+)
 
 __all__ = [
-    "chatCompletionConfig",
-    "imageConfig",
-    "transcriptionsConfig"
+    "default_config"
 ]

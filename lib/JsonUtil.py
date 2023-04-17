@@ -5,7 +5,7 @@ from config import *
 
 class JsonUtil:
     @staticmethod
-    def json2Config(file_dir: str, file_name: str):
+    def json2Map(file_dir: str, file_name: str):
         # 获取当前文件所在目录的上级目录，也就是项目根目录
         root_path = os.path.dirname(os.path.abspath(__file__))
         root_path = os.path.abspath(os.path.join(root_path, '..'))
@@ -22,7 +22,7 @@ class JsonUtil:
         imageConfig = ImageConfig(**conf_data.get("ImageConfig"))
         transcriptionsConfig = TranscriptionsConfig(**conf_data.get("TranscriptionsConfig"))
 
-        return chatCompletionConfig, imageConfig, transcriptionsConfig
+        return dict(conf_data)
 
 
 __all__ = [

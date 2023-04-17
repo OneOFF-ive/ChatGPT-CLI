@@ -17,5 +17,7 @@
   "TranscriptionsConfig": {
     "model": "whisper-1",
     "response_format": "json"
-  }
+  },
+  "conversations": 5,
+  "auto_modify_cons": true
 }

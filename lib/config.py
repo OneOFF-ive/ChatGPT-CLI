@@ -26,8 +26,18 @@ class TranscriptionsConfig:
     response_format: str
 
 
+@dataclass
+class Config:
+    chatCompletionConfig: ChatCompletionConfig
+    imageConfig: ImageConfig
+    transcriptionsConfig: TranscriptionsConfig
+    conversations: int
+    auto_modify_cons: bool
+
+
 __all__ = [
     "ChatCompletionConfig",
     "ImageConfig",
-    "TranscriptionsConfig"
+    "TranscriptionsConfig",
+    "Config"
 ]

@@ -2,7 +2,7 @@ import os
 import openai
 
 from Log import Log
-import default_config
+from default_config import *
 
 
 Log.info("OpenAI Initializing")
