@@ -6,7 +6,8 @@ default_config = Config(
     chatCompletionConfig=ChatCompletionConfig(**data.get("ChatCompletionConfig")),
     imageConfig=ImageConfig(**data.get("ImageConfig")),
     transcriptionsConfig=TranscriptionsConfig(**data.get("TranscriptionsConfig")),
-    **data
+    conversations=data.get("conversations"),
+    auto_modify_cons=data.get("auto_modify_cons")
 )
 
 __all__ = [
