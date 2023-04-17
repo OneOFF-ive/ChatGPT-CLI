@@ -2,7 +2,6 @@ import asyncio
 import datetime
 import glob
 import json
-import logging
 
 import aiofiles
 from openai.error import APIConnectionError, InvalidRequestError
@@ -122,12 +121,22 @@ def parseResult_stream(completions):
     messages.append({"role": "assistant", "content": result})
 
 
+def printChatLog(msg: list[dict]):
+    for m in msg:
+        if m.get("role") == "user":
+            print(m.get("content"))
+        elif m.get("role") == "assistant":
+            Log.answer(m.get("content"))
+
+
 async def chat():
     global messages
     filePath = getChatLogsPath()
     fileName = getCurrentFileName()
     Log.info("File Name: {}".format(os.path.join(filePath, fileName)))
     Log.point("Start Chatting")
+
+    printChatLog(messages)
 
     while True:
         content = await asyncio.get_running_loop().run_in_executor(None, input, '')
