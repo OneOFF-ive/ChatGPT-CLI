@@ -34,8 +34,9 @@ async def openCurrentFileBy(mode):
     fileName = getCurrentFileName()
     filePath = getChatLogsPath()
     file = await aiofiles.open(os.path.join(filePath, fileName), mode)
-    if os.path.getsize(os.path.join(filePath, fileName)) == 0 and mode != 'r':
+    if os.path.getsize(os.path.join(filePath, fileName)) == 0 and mode == 'a':
         await file.write(json.dumps(messages[0]) + '\n')
+        await file.flush()
     return file
 
 
@@ -72,9 +73,9 @@ async def append(msg: list[dict], fp=None):
 async def setCurrentFile(fileName: str):
     global current_file_name, messages
     try:
+        current_file_name = fileName
         fp = await openCurrentFileBy('r')
         messages.clear()
-        current_file_name = fileName
         async for line in fp:
             item = json.loads(line)
             messages.append(item)
