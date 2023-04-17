@@ -36,9 +36,6 @@ async def openCurrentFileBy(mode):
     fileName = getCurrentFileName()
     filePath = getChatLogsPath()
     file = await aiofiles.open(os.path.join(filePath, fileName), mode)
-    if os.path.getsize(os.path.join(filePath, fileName)) == 0 and mode == 'a':
-        await file.write(json.dumps(messages[0]) + '\n')
-        await file.flush()
     return file
 
 
@@ -70,16 +67,20 @@ async def append(msg: list[dict]):
 # noinspection PyTypeChecker
 async def setCurrentFile(fileName: str):
     global current_file_name, messages
-    try:
-        current_file_name = fileName
+    current_file_name = fileName
+    filePath = getChatLogsPath()
+    file = os.path.join(filePath, fileName)
+    if not os.path.exists(file):
+        fp = await openCurrentFileBy('w')
+        await fp.write(json.dumps(messages[0]) + '\n')
+        await fp.close()
+    else:
         fp = await openCurrentFileBy('r')
         messages.clear()
         async for line in fp:
             item = json.loads(line)
             messages.append(item)
         await fp.close()
-    except FileNotFoundError as e:
-        raise e
 
 
 async def allChats():
@@ -91,6 +92,8 @@ async def allChats():
 
 async def selectChat(fileName):
     global messages
+    if not fileName.endswith('.json'):
+        fileName += '.json'
     try:
         Log.info("Loading File {}".format(fileName))
         await setCurrentFile(fileName)

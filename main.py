@@ -27,6 +27,7 @@ async def run():
         Log.point("Next")
 
         user_input = input()
+        user_input = user_input.strip()
         split_input = user_input.split()
         option = split_input[0]
         args = split_input[1:]
