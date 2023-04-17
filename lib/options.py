@@ -1,4 +1,5 @@
 import datetime
+import glob
 
 from Log import *
 import json
@@ -26,21 +27,24 @@ async def write(msg: list[dict], fp):
         await fp.write('\n')
 
 
-async def save():
+async def save(fp=None):
     global messages, current_file_name
     fileName = datetime.datetime.now().strftime(
         "%Y-%m-%d-%H-%M-%S") + ".json" if current_file_name == "" else current_file_name
     current_file_name = fileName
     filePath = getChatLogsPath()
     Log.info("Saving File {}".format(fileName))
-    async with aiofiles.open(os.path.join(filePath, fileName), 'w') as fp:
+    if fp is not None:
         await write(messages, fp)
+    else:
+        async with aiofiles.open(os.path.join(filePath, fileName), 'a') as fp:
+            await write(messages, fp)
     Log.info("Saved File {}".format(fileName))
 
 
 # noinspection PyTypeChecker
 async def setCurrentFile(fileName: str):
-    global current_file_name
+    global current_file_name, messages
     filePath = getChatLogsPath()
     try:
         async with aiofiles.open(os.path.join(filePath, fileName), 'r') as fp:
@@ -53,12 +57,30 @@ async def setCurrentFile(fileName: str):
         raise e
 
 
+async def allChats():
+    filePath = getChatLogsPath()
+    Log.point("Existing Files：")
+    for file in glob.glob(os.path.join(filePath, "*.json")):
+        Log.answer(file)
 
 
+async def selectChat(fileName):
+    global messages
+    try:
+        Log.info("Loading File {}".format(fileName))
+        await setCurrentFile(fileName)
+        Log.info("Loaded File {}, Messages Is {}".format(fileName, messages))
+    except FileNotFoundError:
+        Log.error("File Does Not Exist")
+
+
+Log.info("File Directory Generating")
 chat_logs_path = getChatLogsPath()
-generateCatalogue(chat_logs_path)
-file = aiofiles.open(os.path.join(chat_logs_path, "2023-04-16-19-12-44.json"))
+generateCatalogue(getChatLogsPath())
+Log.info("File Directory Generated. Located at {}".format(chat_logs_path))
 
 __all__ = [
     "save",
+    "selectChat",
+    "allChats"
 ]
