@@ -11,7 +11,9 @@
 · 音频转文字  
 · 一键启动  
 · 聊天记录保存  
-· 快速响应
+· 异步调用，快速响应
+· 自动调整上下文，对话次数无限制
+· 支持DIY参数
 
 ### 启动之前
 1. 准备好你的 [OpenAI API Key](https://platform.openai.com/account/api-keys)
@@ -51,33 +53,49 @@ PAUSE
 </div>
 
 ### 如何使用
-该项目共有五个选项```chat file save image audio```，当程序提示```Action```时即可输入选项并进入对应的模式，输入```quit```可以退出该程序，也可以直接关闭程序:D，接下来将分别介绍各个选项的作用：  
-#### chat
-进入文字聊天模式
-#### file
-设置当前程序使用哪一个对话记录，如果不设置，则默认开启一个新的对话
-#### save
+该系统共有六个选项```chat file save image audio```，当程序提示```Action```时即可输入选项并进入对应的模式，输入```quit```可以退出该程序，也可以直接关闭程序:D，接下来将分别介绍各个选项的作用：  
+#### ```chat```
+进入文字聊天模式，如果没有选择对话记录文件，默认创建一个新的对话和对应的记录文件，输入```quit```返回主菜单
+#### ```all```
+打印当前系统保存的所有对话记录文件
+#### ```set <file name>```
+设置当前的对话记录文件，同时缓存对话记录
+#### ```save```
 保存当前的对话记录，通常不需要手动调用，因为对话会自动保存,保存路径为当前用户的Documents\chat_logs目录中，文件名为当前日期，文件名可以手动修改
-#### image
+#### ```image <prompt>```
 输入图片描述，返回图片的url，该图片和url不会自动保存，需要用户手动下载保存
-#### audio
-输入音频文件的路径，返回该音频翻译的文字内容  
+#### ```audio <file name>```
+输入音频文件的**完整路径**，返回该音频翻译的文字内容
 
-**注意**：所有选项都可以通过输入```quit```返回主菜单
-
-### 自定义程序
-修改main.py文件中的部分代码来定制化你的聊天机器人:D
-```python
-system_prompt: str = "You are a helpful assistant."
-model: str = "gpt-3.5-turbo"
-temperature: int = 1
-n: int = 1
-stream: bool = True
-stop: str = ""
-max_tokens: int = 2048
-presence_penalty: int = 0
-frequency_penalty: int = 0
+### DIY参数
+修改conf/config.json文件来定制化你的聊天机器人:D
+```json
+{
+  "ChatCompletionConfig": {
+    "model": "gpt-3.5-turbo",
+    "temperature": 1,
+    "n": 1,
+    "stream": true,
+    "stop": "",
+    "max_tokens": 2048,
+    "presence_penalty": 0,
+    "frequency_penalty": 0
+  },
+  "ImageConfig": {
+    "n": 1,
+    "size": "1024x1024",
+    "response_format": "url"
+  },
+  "TranscriptionsConfig": {
+    "model": "whisper-1",
+    "response_format": "json"
+  },
+  "conversations": 5,
+  "auto_modify_cons": true
+}
 ```
+```conversations``` 代表系统每次发送请求携带的上下文数量
+```auto_modify_cons``` 代表系统在运行过程是否自动调整```conversations```
 参数的具体含义参考[OpenAI API官网](https://platform.openai.com/docs/api-reference)
 
 ### 使用截图
