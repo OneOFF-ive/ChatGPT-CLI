@@ -66,7 +66,6 @@ async def append(msg: list[dict], fp=None):
         fp = await openCurrentFileBy('a')
         await write(msg, fp)
         await fp.close()
-    Log.info("[debug]:append")
 
 
 # noinspection PyTypeChecker
