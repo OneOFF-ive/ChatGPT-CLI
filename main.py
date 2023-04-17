@@ -26,16 +26,20 @@ async def run():
     while True:
         Log.point("Next")
 
-        user_input = input()
-        user_input = user_input.strip()
-        split_input = user_input.split()
-        option = split_input[0]
-        args = split_input[1:]
+        try:
+            user_input = input()
+            user_input = user_input.strip()
+            split_input = user_input.split()
+            option = split_input[0]
+            args = split_input[1:]
 
-        if option == "quit":
-            break
-        await cli.parse(option, *args)
-
+            if option == "quit":
+                break
+            await cli.parse(option, *args)
+        except TypeError:
+            Log.error("Option Does Not Exist", "OptionNotExistError")
+        except IndexError:
+            pass
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(run())

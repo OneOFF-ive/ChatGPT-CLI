@@ -35,7 +35,7 @@ def getCurrentFileName():
 async def openCurrentFileBy(mode):
     fileName = getCurrentFileName()
     filePath = getChatLogsPath()
-    file = await aiofiles.open(os.path.join(filePath, fileName), mode)
+    file = await aiofiles.open(os.path.join(filePath, fileName), mode=mode)
     return file
 
 
@@ -74,6 +74,7 @@ async def setCurrentFile(fileName: str):
         fp = await openCurrentFileBy('w')
         await fp.write(json.dumps(messages[0]) + '\n')
         await fp.close()
+        messages = messages[0:1]
     else:
         fp = await openCurrentFileBy('r')
         messages.clear()
