@@ -24,7 +24,7 @@ async def run():
     print(Fore.CYAN + logo)
 
     while True:
-        Log.point("Action")
+        Log.point("Next")
 
         user_input = input()
         split_input = user_input.split()
