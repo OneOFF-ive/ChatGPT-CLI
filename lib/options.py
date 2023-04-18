@@ -135,7 +135,7 @@ def not_auto_modify_cons():
         res = ApiBuilder.ChatCompletion(messages)
         parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
         asyncio.create_task(append(messages[-2:]))
-    except APIConnectionError:
+    except APIConnectionError or TimeoutError:
         Log.error("Connection timed out. Please check the network or try again later", "APIConnectionError")
     except InvalidRequestError:
         Log.error("Possibly because the input token exceeds the maximum limit",
@@ -152,7 +152,7 @@ def auto_modify_cons():
             default_config.conversations = default_config.conversations + 1
 
         asyncio.create_task(append(messages[-2:]))
-    except APIConnectionError:
+    except APIConnectionError or TimeoutError:
         Log.error("Connection timed out. Please check the network or try again later",
                   "APIConnectionError")
     except InvalidRequestError:
@@ -190,16 +190,16 @@ async def chat():
 async def image(prompt):
     try:
         Log.answer(ApiBuilder.Image(prompt)["data"][0]["url"])
-    except APIConnectionError:
+    except APIConnectionError or TimeoutError:
         Log.error("Connection timed out. Please check the network or try again later", "APIConnectionError")
     except InvalidRequestError:
-        Log.error("[InvalidRequestError]:Possibly because the input token exceeds the maximum limit")
+        Log.error("Unable to understand prompt", "InvalidRequestError")
 
 
 async def translate(prompt):
     try:
         Log.answer(ApiBuilder.Transcriptions(prompt)["text"])
-    except APIConnectionError:
+    except APIConnectionError or TimeoutError:
         Log.error("Connection timed out. Please check the network or try again later", "APIConnectionError")
     except InvalidRequestError:
         Log.error("Possibly because the input token exceeds the maximum limit", "InvalidRequestError")
