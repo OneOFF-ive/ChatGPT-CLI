@@ -37,7 +37,7 @@ async def run():
                 break
             await cli.parse(option, *args)
         except TypeError:
-            Log.error("Option Does Not Exist", "OptionNotExistError")
+            Log.error("Option does not exist or correct parameters were not entered")
         except IndexError:
             pass
 
