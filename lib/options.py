@@ -142,7 +142,7 @@ def not_auto_modify_cons():
         Log.error("Possibly because the input token exceeds the maximum limit",
                   "InvalidRequestError")
     finally:
-        Log.info("[Debug]: Context's size is {}".format(len(send_messages)))
+        Log.info("Current context's size is {}".format(len(send_messages)))
 
 
 def auto_modify_cons():
@@ -168,7 +168,8 @@ def auto_modify_cons():
             Log.error("Possibly because the input token exceeds the maximum limit",
                       "InvalidRequestError")
     finally:
-        Log.info("[Debug]: Context's size is {}".format(len(send_messages)))
+        Log.info("Current context's size is {}".format(len(send_messages)))
+
 
 async def chat():
     global messages
