@@ -149,7 +149,7 @@ def auto_modify_cons():
         parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
 
         if default_config.conversations - len(messages) < 0.3 * default_config.conversations:
-            default_config.conversations = default_config.conversations + 1
+            default_config.conversations = default_config.conversations + 2
 
         asyncio.create_task(append(messages[-2:]))
     except APIConnectionError or TimeoutError:
