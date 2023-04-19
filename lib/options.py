@@ -155,9 +155,6 @@ def auto_modify_cons():
             default_config.conversations = default_config.conversations + 2
 
         asyncio.create_task(append(messages[-2:]))
-    except APIConnectionError or TimeoutError:
-        Log.error("Connection timed out. Please check the network or try again later",
-                  "APIConnectionError")
     except InvalidRequestError:
         if default_config.conversations > 1:
             default_config.conversations = int(default_config.conversations / 2)
@@ -167,6 +164,9 @@ def auto_modify_cons():
         else:
             Log.error("Possibly because the input token exceeds the maximum limit",
                       "InvalidRequestError")
+    except APIConnectionError or TimeoutError:
+        Log.error("Connection timed out. Please check the network or try again later",
+                  "APIConnectionError")
     finally:
         Log.info("Current context's size is {}".format(len(send_messages)))
 
