@@ -18,6 +18,6 @@
     "model": "whisper-1",
     "response_format": "json"
   },
-  "max_context_size": 11,
+  "max_context_size": 5,
   "auto_modify_cons": true
 }
