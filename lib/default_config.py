@@ -7,7 +7,7 @@ default_config = Config(
     chatCompletionConfig=ChatCompletionConfig(**data.get("ChatCompletionConfig")),
     imageConfig=ImageConfig(**data.get("ImageConfig")),
     transcriptionsConfig=TranscriptionsConfig(**data.get("TranscriptionsConfig")),
-    conversations=data.get("conversations"),
+    max_context_size=data.get("conversations"),
     auto_modify_cons=data.get("auto_modify_cons")
 )
 

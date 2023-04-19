@@ -31,7 +31,7 @@ class Config:
     chatCompletionConfig: ChatCompletionConfig
     imageConfig: ImageConfig
     transcriptionsConfig: TranscriptionsConfig
-    conversations: int
+    max_context_size: int
     auto_modify_cons: bool
 
 

@@ -131,44 +131,24 @@ def printChatLog(msg: list[dict]):
 
 
 def not_auto_modify_cons():
-    send_messages = messages[-default_config.conversations:]
-    try:
-        res = ApiBuilder.ChatCompletion(send_messages)
-        parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
-        asyncio.create_task(append(messages[-2:]))
-    except APIConnectionError or TimeoutError:
-        Log.error("Connection timed out. Please check the network or try again later", "APIConnectionError")
-    except InvalidRequestError:
-        Log.error("Possibly because the input token exceeds the maximum limit",
-                  "InvalidRequestError")
-    finally:
-        Log.info("Current context's size is {}".format(len(send_messages)))
+    send_messages = messages[-default_config.max_context_size:]
+    Log.info("Current context's size is {}".format(len(send_messages)))
+
+    res = ApiBuilder.ChatCompletion(send_messages)
+    parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
+    asyncio.create_task(append(messages[-2:]))
 
 
 def auto_modify_cons():
-    send_messages = messages[-default_config.conversations:]
-    try:
-        res = ApiBuilder.ChatCompletion(send_messages)
-        parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
+    send_messages = messages[-default_config.max_context_size:]
+    Log.info("Current context's size is {}".format(len(send_messages)))
+    res = ApiBuilder.ChatCompletion(send_messages)
+    parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
 
-        if default_config.conversations - len(messages) < 0.3 * default_config.conversations:
-            default_config.conversations = default_config.conversations + 2
+    if default_config.max_context_size - len(messages) < 0.3 * default_config.max_context_size:
+        default_config.max_context_size = default_config.max_context_size + 2
 
-        asyncio.create_task(append(messages[-2:]))
-    except InvalidRequestError:
-        if default_config.conversations > 1:
-            default_config.conversations = int(default_config.conversations / 2)
-            Log.warn("The number of tokens exceeds the limit. Automatically reduce the context size and "
-                     "prepare to resend the request.")
-            Log.warn("The context size is now {}.".format(default_config.conversations))
-        else:
-            Log.error("Possibly because the input token exceeds the maximum limit",
-                      "InvalidRequestError")
-    except APIConnectionError or TimeoutError:
-        Log.error("Connection timed out. Please check the network or try again later",
-                  "APIConnectionError")
-    finally:
-        Log.info("Current context's size is {}".format(len(send_messages)))
+    asyncio.create_task(append(messages[-2:]))
 
 
 async def chat():
@@ -180,16 +160,33 @@ async def chat():
 
     printChatLog(messages)
 
+    need_input = True
     while True:
-        content = await asyncio.get_running_loop().run_in_executor(None, input, '')
-        if content == "quit":
-            await save()
-            break
-        messages.append({"role": "user", "content": content})
-        if not default_config.auto_modify_cons:
-            not_auto_modify_cons()
-        else:
-            auto_modify_cons()
+        if need_input:
+            content = await asyncio.get_running_loop().run_in_executor(None, input, '')
+            if content == "quit":
+                await save()
+                break
+            messages.append({"role": "user", "content": content})
+        need_input = True
+
+        try:
+            if not default_config.auto_modify_cons:
+                not_auto_modify_cons()
+            else:
+                auto_modify_cons()
+        except InvalidRequestError:
+            if default_config.max_context_size > 2 and default_config.auto_modify_cons:
+                default_config.max_context_size = int(default_config.max_context_size / 2)
+                Log.warn("The number of tokens exceeds the limit. Automatically reduce the context size and "
+                         "prepare to resend the request.")
+                need_input = False
+            else:
+                Log.error("Possibly because the input token exceeds the maximum limit",
+                          "InvalidRequestError")
+        except APIConnectionError or TimeoutError:
+            Log.error("Connection timed out. Please check the network or try again later",
+                      "APIConnectionError")
 
 
 async def image(prompt):
