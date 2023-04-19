@@ -131,8 +131,9 @@ def printChatLog(msg: list[dict]):
 
 
 def not_auto_modify_cons():
+    send_messages = messages[-default_config.conversations:]
     try:
-        res = ApiBuilder.ChatCompletion(messages)
+        res = ApiBuilder.ChatCompletion(send_messages)
         parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
         asyncio.create_task(append(messages[-2:]))
     except APIConnectionError or TimeoutError:
@@ -140,11 +141,13 @@ def not_auto_modify_cons():
     except InvalidRequestError:
         Log.error("Possibly because the input token exceeds the maximum limit",
                   "InvalidRequestError")
+    finally:
+        Log.info("[Debug]: Context's size is {}".format(len(send_messages)))
 
 
 def auto_modify_cons():
+    send_messages = messages[-default_config.conversations:]
     try:
-        send_messages = messages[-default_config.conversations:]
         res = ApiBuilder.ChatCompletion(send_messages)
         parseResult_stream(res) if default_config.chatCompletionConfig.stream else parseResult(res)
 
@@ -164,7 +167,8 @@ def auto_modify_cons():
         else:
             Log.error("Possibly because the input token exceeds the maximum limit",
                       "InvalidRequestError")
-
+    finally:
+        Log.info("[Debug]: Context's size is {}".format(len(send_messages)))
 
 async def chat():
     global messages
