@@ -176,7 +176,7 @@ async def chat():
             else:
                 auto_modify_cons()
         except InvalidRequestError:
-            if default_config.max_context_size > 2 and default_config.auto_modify_cons:
+            if default_config.max_context_size > 1 and default_config.auto_modify_cons:
                 default_config.max_context_size = int(default_config.max_context_size / 2)
                 Log.warn("The number of tokens exceeds the limit. Automatically reduce the context size and "
                          "prepare to resend the request.")
